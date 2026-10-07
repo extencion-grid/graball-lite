@@ -1,0 +1,8 @@
+# dependencies / builds are shipped ready-to-load, do not commit generated noise
+node_modules/
+dist/
+*.zip
+*.crx
+*.log
+.DS_Store
+Thumbs.db

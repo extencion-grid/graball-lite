@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "GrabAll Lite — descarga masiva de imágenes",
+  "version": "0.1.0",
+  "description": "Detecta y descarga imágenes generadas dinámicamente, incluso dentro de iframes anidados de otro origen, sin recargar la página.",
+  "minimum_chrome_version": "119",
+  "permissions": [
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "match_origin_as_fallback": true,
+      "js": [
+        "src/content/detector.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "GrabAll Lite — descarga masiva de imágenes",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "src/options/options.html",
+  "commands": {
+    "toggle-grabber": {
+      "suggested_key": {
+        "default": "Alt+G"
+      },
+      "description": "Activar/desactivar captura en la pestaña activa"
+    }
+  }
+}

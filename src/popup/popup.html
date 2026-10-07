@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>GrabAll</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header popup-header">
+    <div class="brand">
+      <span class="logo">G</span>
+      <h1 data-i18n="appName">GrabAll</h1>
+    </div>
+    <div class="header-actions">
+      <button id="openOptions" class="icon-btn" title="Ajustes" aria-label="Ajustes">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+      <label class="switch" title="Capturando">
+        <input type="checkbox" id="captureToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-value" id="detectedCount">0</span><span class="stat-label" data-i18n="detected">Detectadas</span></div>
+    <div class="stat"><span class="stat-value" id="downloadedCount">0</span><span class="stat-label" data-i18n="downloaded">Descargadas</span></div>
+  </div>
+
+  <nav class="tabs">
+    <button id="tabSettings" class="tab active" data-i18n="settings">Ajustes</button>
+    <button id="tabGallery" class="tab"><span data-i18n="gallery">Galería</span> (<span id="galleryCount">0</span>)</button>
+  </nav>
+
+  <section id="viewSettings" class="view">
+    <section class="controls">
+      <div class="row controls-row">
+        <div class="field grow">
+          <label for="folder" data-i18n="targetFolder">Carpeta de destino</label>
+          <input type="text" id="folder" placeholder="">
+          <small id="folderHint" class="hint-inline"></small>
+          <button id="folderOverride" class="link" hidden data-i18n="folderOverride">Reiniciar a carpeta global</button>
+        </div>
+        <div class="field mode-field">
+          <label for="mode" data-i18n="mode">Modo</label>
+          <select id="mode">
+            <option value="manual" data-i18n="manual">Manual</option>
+            <option value="auto" data-i18n="automatic">Automático</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button id="downloadAll" class="btn" data-i18n="downloadAll">Descargar todo</button>
+      <button id="downloadZipAll" class="btn primary">ZIP todo</button>
+      <button id="clearList" class="btn subtle" data-i18n="clearList">Limpiar lista</button>
+    </section>
+
+    <section class="history-section">
+      <h2 data-i18n="history">Historial</h2>
+      <ul id="history" class="history"><li class="empty" data-i18n="noHistory">Sin descargas aún</li></ul>
+    </section>
+  </section>
+
+  <section id="viewGallery" class="view" hidden>
+    <section class="actions">
+      <button id="downloadSelected" class="btn primary" data-i18n="downloadSelected">Descargar seleccionadas</button>
+      <button id="downloadZip" class="btn">ZIP seleccionadas</button>
+    </section>
+    <section class="gallery-section">
+      <div class="toolbar">
+        <button id="selectAll" class="link" data-i18n="selectAll">Seleccionar todo</button>
+        <button id="deselectAll" class="link" data-i18n="deselectAll">Quitar selección</button>
+        <button id="selectRange" class="link" data-i18n="selectRange">Intervalo</button>
+      </div>
+      <p id="rangeHint" class="hint-inline" hidden></p>
+      <p id="rangeStatus" class="range-status"></p>
+      <div id="gallery" class="gallery">
+        <p class="empty" data-i18n="noImages">Sin imágenes detectadas todavía</p>
+      </div>
+    </section>
+  </section>
+
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 data-i18n="autoConfirmTitle">Activar descarga automática</h2>
+      <p data-i18n="autoConfirmBody">Cada imagen nueva detectada en este sitio se descargará sola. ¿Continuar?</p>
+      <div class="modal-actions">
+        <button id="confirmCancel" class="btn" data-i18n="cancel">Cancelar</button>
+        <button id="confirmOk" class="btn primary" data-i18n="confirm">Activar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

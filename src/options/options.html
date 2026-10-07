@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="optionsTitle">Opciones de GrabAll</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font: 14px system-ui, sans-serif; color: #e6f1ff; background: #05060a; margin: 0; padding: 24px; }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .sub { color: #8ea2c0; margin-bottom: 20px; }
+    section { background: #0b1020; border: 1px solid #1f2a44; border-radius: 8px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+    .step[hidden] { display: none; }
+    .steps { display: flex; gap: 6px; margin-bottom: 18px; }
+    .steps span { flex: 1; height: 4px; border-radius: 2px; background: #1f2a44; }
+    .steps span.done { background: #00ffa3; }
+    h2 { font-size: 14px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .04em; color: #8ea2c0; }
+    .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    label { font-weight: 600; font-size: 12px; }
+    small { color: #8ea2c0; }
+    input[type="text"], input[type="number"], select {
+      border: 1px solid #1f2a44; border-radius: 6px; padding: 8px 10px; font: inherit; background: #0b1020; color: #e6f1ff;
+    }
+    .check { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .check input { accent-color: #00ffa3; }
+    .site-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+    .site-row input { flex: 1; }
+    .site-row button { border: 1px solid #1f2a44; background: #0b1020; color: #e6f1ff; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button { border: 1px solid #1f2a44; border-radius: 6px; padding: 8px 14px; cursor: pointer; background: #0b1020; color: #e6f1ff; font: inherit; font-weight: 500; transition: all .15s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+    button:hover { background: #111827; border-color: #33406b; }
+    button:active { transform: translateY(1px); box-shadow: none; }
+    button.primary { background: #00ffa3; border-color: #00ffa3; color: #05060a; font-weight: 700; }
+    button.primary:hover { background: #39ffb0; border-color: #39ffb0; }
+    button:focus-visible { outline: 2px solid #00ffa3; outline-offset: 1px; }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus { outline: none; border-color: #00ffa3; box-shadow: 0 0 0 3px rgba(0,255,163,.15); }
+    input[type="text"], input[type="number"], select { transition: border-color .15s, box-shadow .15s; }
+    input[type="checkbox"] { accent-color: #00ffa3; width: 16px; height: 16px; cursor: pointer; }
+    select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M1 1l4 4 4-4' stroke='%238ea2c0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+    .tag { transition: background .15s; }
+    .tag:hover { background: #12233a; }
+    .steps span { transition: background .3s; }
+    .toast { position: fixed; bottom: 16px; right: 16px; background: #00ffa3; color: #05060a; padding: 10px 16px; border-radius: 6px; opacity: 0; transition: opacity .3s; font-weight: 600; }
+    .toast.show { opacity: 1; }
+    .whitelist-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { background: #0b1020; border: 1px solid #1f2a44; color: #00cc82; border-radius: 999px; padding: 4px 10px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+    .tag button { background: none; border: none; color: #00cc82; cursor: pointer; padding: 0; font-size: 14px; }
+    .step-nav { display: flex; justify-content: space-between; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 data-i18n="optionsTitle">Opciones de GrabAll</h1>
+    <p class="sub">Persisten en <code>chrome.storage.local</code>.</p>
+    <div class="steps" id="stepBar"><span class="done"></span><span></span><span></span><span></span></div>
+
+    <section class="step" data-step="1">
+      <h2>1 · Destino y nombres</h2>
+      <div class="field">
+        <label for="folder" data-i18n="targetFolder">Carpeta de destino</label>
+        <input type="text" id="folder">
+        <small data-i18n="targetFolderHint">Vacío = raíz de Descargas.</small>
+      </div>
+      <div class="field">
+        <label for="namePattern" data-i18n="namePattern">Patrón de nombre</label>
+        <input type="text" id="namePattern" value="{contador}">
+        <small class="hints" data-i18n="hints">{sitio} {fecha} {hora} {contador} {prompt} {base}</small>
+      </div>
+    </section>
+
+    <section class="step" data-step="2" hidden>
+      <h2>2 · Detección</h2>
+      <div class="field">
+        <label for="minSize" data-i18n="filterMin">Tamaño mínimo (px)</label>
+        <input type="number" id="minSize" min="0">
+      </div>
+      <div class="field">
+        <label for="maxConcurrent" data-i18n="maxConcurrent">Descargas simultáneas</label>
+        <input type="number" id="maxConcurrent" min="1" max="20">
+      </div>
+      <div class="check">
+        <input type="checkbox" id="filterEnabled">
+        <label for="filterEnabled" data-i18n="filterEnabled">Filtrar imágenes pequeñas</label>
+      </div>
+      <div class="check">
+        <input type="checkbox" id="detectBackground">
+        <label for="detectBackground" data-i18n="detectBackground">Detectar fondos CSS</label>
+      </div>
+    </section>
+
+    <section class="step" data-step="3" hidden>
+      <h2>3 · Modo automático y ZIP</h2>
+      <div class="field">
+        <label for="zipLevel">Compresión ZIP</label>
+        <select id="zipLevel">
+          <option value="fast">Rápida (sin comprimir, más grande)</option>
+          <option value="balanced">Equilibrada (recomendada)</option>
+        </select>
+      </div>
+      <div id="whitelist" class="whitelist-tags"></div>
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <input type="text" id="whitelistInput" placeholder="perchance.org">
+        <button id="addWhitelist">+</button>
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label for="blacklistInput">Blacklist (separar con coma)</label>
+        <input type="text" id="blacklistInput">
+      </div>
+    </section>
+
+    <section class="step" data-step="4" hidden>
+      <h2>4 · Por sitio y portabilidad</h2>
+      <div id="siteConfigs"></div>
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <input type="text" id="siteDomain" placeholder="perchance.org">
+        <input type="text" id="siteFolder" placeholder="carpeta">
+        <button id="addSite" data-i18n="addSite">Añadir sitio</button>
+      </div>
+      <div class="actions" style="margin-top:16px;">
+        <button id="export" data-i18n="export">Exportar configuración</button>
+        <button id="import" data-i18n="import">Importar configuración</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none">
+      </div>
+    </section>
+
+    <div class="step-nav">
+      <button id="prevStep">← Atrás</button>
+      <div>
+        <button id="save" class="primary" data-i18n="save">Guardar</button>
+        <button id="nextStep" class="primary">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Guardado</div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
